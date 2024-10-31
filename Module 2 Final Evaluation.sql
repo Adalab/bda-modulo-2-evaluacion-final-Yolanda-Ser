@@ -154,13 +154,205 @@ SELECT  actor.first_name, actor.last_name
     
 /*15. Hay algún actor o actriz que no apareca en ninguna película en la tabla film_actor.*/
 # Subconsulta: los actores de la tabla actor que no esten en la tabla film_actor (en esta ultima tabla estan las peliculas y sus actores) por su columna comun actor_id
-# El resultado es NULL, es decir que todos los actores si estan en alguna pelicula. 
+
+# El resultado es NULL, es decir que todos los actores SI estan en alguna pelicula. 
+
+# 1º Query
 SELECT actor_id
 	FROM film_actor;
-
+    
+# Query final 
 SELECT actor.actor_id
 	FROM actor
     WHERE actor.actor_id NOT IN (SELECT actor_id
 	FROM film_actor);
     
+/* 16. Encuentra el título de todas las películas que fueron lanzadas entre el año 2005 y 2010  
+# Tabla film, utilizo BETWEEN con los años indicados en la columna release_year. El resultado es solamente 2006. */
+
+SELECT title, release_year
+	FROM film
+    WHERE release_year BETWEEN 2005 AND 2010; 
+
+/*Comprobación con DISTINT de cuantos diferentes años, por el resultado anterior*/
+SELECT DISTINCT release_year
+	FROM film;
     
+    
+/* 17. Encuentra el título de todas las películas que son de la misma categoría que "Family".*/
+
+/* 1º opcion:
+# Utilizo 2 INNER JOIN para unir: a) film_category y film por film_id , b) film_category y category por categori_id. 
+# Añado WHERE para indicar la condición. */ 
+
+SELECT film.title, category.name
+	FROM film 
+    INNER JOIN film_category
+    ON film.film_id = film_category.film_id
+    INNER JOIN category
+    ON film_category.category_id = category.category_id
+   WHERE category.name = 'Family';
+
+/* 2º opcion 
+# Utilizo CTE (nombre: category_family)
+  primera query...
+	* Tabla category selecciono cual es el id de esta categoria = nº 8  */
+
+SELECT category_id
+	FROM category
+    WHERE name = 'Family';
+
+/* segunda query...
+	* Necesito el titulo en la tabla film, INNER JOIN para unir esta tabla con film_category, mediante film_id, con la condición 
+	 donde la category_id esté en una subcuenta de la tabla category
+    + */
+WITH category_family AS (
+		SELECT category_id
+			FROM category
+			WHERE name = 'Family')
+SELECT film.title
+	FROM film
+	INNER JOIN film_category
+    ON film.film_id = film_category.film_id 
+    WHERE film_category.category_id IN 
+    (SELECT category_id FROM category_family);
+    
+    
+    
+/* 18. Muestra el nombre y apellido de los actores que aparecen en más de 10 películas.*/
+
+/* 1º ocpión:
+	Subcuentas : 1.- Tabla film_actor agrupo los ids de actores que esten en mas de 10 peliculas: GROUP BY + HAVING 2.- Uno la subconsulta anterior a la consulta, INNER JOIN con first y last name de Tabla actor */
+# 1º query: (200 actores) AS actors_films
+SELECT actor_id
+	FROM film_actor   
+    GROUP BY actor_id
+    HAVING COUNT(*)>10;
+
+# Query final:(200 nombres de actores)
+SELECT a.first_name, a.last_name
+	FROM actor AS a
+    INNER JOIN (SELECT f.actor_id
+	FROM film_actor  AS F 
+    GROUP BY f.actor_id
+    HAVING COUNT(*)>10) AS actors_films
+    ON a.actor_id =actors_films.actor_id;
+
+/* 2º ocpión
+	CTE. Nombre: actors_films
+    * Necesito el titulo en la tabla film, INNER JOIN para unir esta tabla con film_category, mediante film_id, con la condición 
+	 donde la category_id esté en una subcuenta de la tabla category*/
+
+# 2 queris previas y de prueba: 
+
+SELECT actor_id
+	FROM film_actor   
+    GROUP BY actor_id
+    HAVING COUNT(*)>10;
+
+SELECT a.first_name, a.last_name
+FROM actor AS a
+INNER JOIN actors_films 
+ON a.actor_id = actors_films.actor_id;
+
+# Queris final:
+WITH actors_films AS (
+	SELECT actor_id
+		FROM film_actor   
+		GROUP BY actor_id
+		HAVING COUNT(*)>10)
+SELECT a.first_name, a.last_name
+	FROM actor AS a
+	INNER JOIN actors_films 
+	ON a.actor_id = actors_films.actor_id;
+
+   
+/* 19. Encuentra el título de todas las películas que son "R" y tienen una duración mayor a 2 horas en la tabla film.*/
+# WHERE para seleccionar la columna igual al dato y en otro caso igual 
+
+SELECT title, rating, length
+FROM film
+WHERE rating = 'R'AND length>120;
+
+/* 20. Encuentra las categorías de películas que tienen un promedio de duración superior a 120 minutos y muestra el
+nombre de la categoría junto con el promedio de duración.*/
+# Tenemos que usar 3 tablas: category, film_category y film uniendolas con INNER JOIN.
+# AVG: para el promedio de duracion por categoria, agrupando GROUP BY (por categoria)
+# HAVING filtro mayor a 120 minutos. 
+
+
+SELECT category.name, ROUND(AVG(film.length),2) AS average_length
+	FROM category
+    INNER JOIN film_category
+    ON category.category_id = film_category.category_id
+    INNER JOIN film 
+    ON film_category.film_id= film.film_id
+	GROUP BY category.name
+    HAVING AVG(film.length)>120;
+
+
+/* 21. Encuentra los actores que han actuado en al menos 5 películas y muestra el nombre del actor junto con la
+cantidad de películas en las que han actuado.*/
+#### tengo que hacer el recuento y comprobar, no esta terminado 
+
+
+
+SELECT a.first_name, a.last_name, COUNT(*) AS film_count
+	FROM actor AS a
+    INNER JOIN film_actor AS f
+    ON a.actor_id = f.actor_id
+	GROUP BY a.actor_id
+	HAVING COUNT(*)>5;
+ 
+
+/* 22. Encuentra el título de todas las películas que fueron alquiladas por más de 5 días. Utiliza una subconsulta para
+encontrar los rental_ids con una duración superior a 5 días y luego selecciona las películas correspondientes.*/
+# INNER JOIN : Unir la tabla inventory y film, por film_id y filtramos (WHERE) la subconsulta.
+# Subconsulta: tenemos que relacionar inventory_id de la tabla rental para filtrar los registros  
+# DISTINTC en title de la tabla films para eliminar duplicaddos
+
+# query de subconsulta 
+SELECT inventory_id
+	FROM rental
+    WHERE DATEDIFF(return_date, rental_date) > 5;
+    
+#Query definitiva : 
+SELECT DISTINCT title
+	FROM film AS f
+		INNER JOIN inventory AS i 
+		ON f.film_id = i.film_id
+		WHERE i.inventory_id IN (
+        SELECT inventory_id
+			FROM rental
+			WHERE DATEDIFF(return_date, rental_date) > 5);
+    
+
+/* 23. Encuentra el nombre y apellido de los actores que no han actuado en ninguna película de la categoría "Horror".
+Utiliza una subconsulta para encontrar los actores que han actuado en películas de la categoría "Horror" y luego exclúyelos de la lista de actores.*/
+  
+  #1º query de subconsulta
+		# Utilizo 2 INNER JOIN para unir 3 tablas: film_actor con film_category por film_id y tabla categoy con film_category por category_id. Where es el filtro para el nombre de la categoria.  
+SELECT actor_ id
+FROM film_actor 
+INNER JOIN film_category
+	ON film_actor.film_id = film_category.film_id
+INNER JOIN category
+	ON film_category.category_id = category-category_id
+WHERE category.name = 'Horror';
+
+#2º query definitiva
+	# Añado la subconsulta anterior a la selección de los datos solicitados que estan en la tabla actor donde filtro con where que actor _id no esté y unido por el seleccionado en la subsconsulta.*/
+    revisar este ejercicio 
+    
+    
+    
+    
+SELECT actor.first_name, actor.last_name
+	FROM actor
+	WHERE actor_id NOT IN (SELECT actor_id
+		FROM film_actor 
+			INNER JOIN film_category
+				ON film_actor.film_id = film_category.film_id
+			INNER JOIN category
+				ON film_category.category_id = category.category_id
+		WHERE category.name = 'Horror');
