@@ -79,9 +79,9 @@ apellido junto con la cantidad de películas alquiladas.
 
 SELECT customer.customer_id, customer.first_name, customer.last_name, COUNT(rental.rental_id) AS total_film_rental
 	FROM customer
-    INNER JOIN rental
-    ON customer.customer_id = rental.customer_id
-    GROUP BY customer.customer_id;
+    	INNER JOIN rental
+    	ON customer.customer_id = rental.customer_id
+    	GROUP BY customer.customer_id;
 
 /*11. Encuentra la cantidad total de películas alquiladas por categoría y muestra el nombre de la categoría junto con el
 recuento de alquileres.
@@ -95,11 +95,11 @@ recuento de alquileres.
 SELECT category.category_id, category.name, COUNT(rental.rental_id) AS total_film_rental
 	FROM category
 	INNER JOIN film_category
-	ON category.category_id = film_category.category_id
+		 category.category_id = film_category.category_id
     INNER JOIN inventory
-	ON film_category.film_id = inventory.film_id
+		ON film_category.film_id = inventory.film_id
 	INNER JOIN rental 
-    ON inventory.inventory_id = rental.inventory_id
+    	 inventory.inventory_id = rental.inventory_id
 	GROUP BY category_id;
     
 /* 12. Encuentra el promedio de duración de las películas para cada clasificación de la tabla film y muestra la
@@ -261,8 +261,8 @@ WITH actors_films AS (
 			HAVING COUNT(*)>10)
 SELECT a.first_name, a.last_name
 	FROM actor AS a
-	INNER JOIN actors_films 
-	ON a.actor_id = actors_films.actor_id;
+		INNER JOIN actors_films 
+			ON a.actor_id = actors_films.actor_id;
 
    
 /* 19. Encuentra el título de todas las películas que son "R" y tienen una duración mayor a 2 horas en la tabla film.*/
@@ -363,7 +363,6 @@ WHERE name = 'Comedy'
 
 
 # Query definitiva:
-
 WITH peliculas_comedia AS (
 	SELECT film_id
 	FROM film_category
