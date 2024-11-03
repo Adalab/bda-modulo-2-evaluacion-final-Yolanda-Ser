@@ -1,10 +1,12 @@
-Evaluación Módulo 2: SQL 📚📚
+Evaluación Módulo 2: SQL 📚
 _________________________________________________________
 
 Descripción 🚀
 __________________________________________________________
 Ejercicio de Evaluación final, correspondiente al Módulo 2 "Domina el Arte de Extraer Información Valiosa". 
+
 Para ello, he utilizando la BBDD 'Sakila', la cual simula una tienda de alquiler de películas,  permitiendo realizar consultas y analasis de datos debido a su estructura formada por diferentes tablas con información sobre películas, actores, clientes, categorias, alquileres, etc., 
+ 
 
 Desarrollo 🚀
 _____________________________________________________________
@@ -19,4 +21,4 @@ mejorando mi conocimiento de código SQL.👩‍🎓
 
  Realizado por: 👩‍💻
 __________________________________________________________________
-. Yolanda Serrano
+Yolanda Serrano
