@@ -10,7 +10,7 @@ Para ello, he utilizado la BBDD 'Sakila', la cual simula una tienda de alquiler 
 Desarrollo 🚀
 _____________________________________________________________
 El desarrolo de este ejercicio de SQL, ha consistido en 25 consultas en las que, como parte de mi formación en este Bootcamp de Analisis de Datos, he contestado mediante diferentes aspectos aprendidos como consultas básicas, CTE's, funciones de agregación, subconsultas, joins, etc.
-El archivo denominado 📂: "...."📂 de este repositorio, tiene almacenado los 25 enunciados junto con sus respuestas utilizando código SQL en My SQL Workbench.⚙️ 
+El archivo denominado 📂Evaluación Final Módulo 2 📂 de este repositorio, tiene almacenado los 25 enunciados junto con sus respuestas utilizando código SQL en My SQL Workbench.⚙️ 
 Además, he añadido algunas notas que fuí usando para el desarrollo de cada ejercicio con el fin de entender más claro mi razonamiento.
   
 Información Adicional😊👩‍🎓
