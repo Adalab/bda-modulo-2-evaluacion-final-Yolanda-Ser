@@ -9,20 +9,12 @@ SELECT DISTINCT(title)
 	FROM film;
     
 /* 2. Muestra los nombres de todas las películas que tengan una clasificación de "PG-13".
-		(Solución con 2 opciones:
-				1) WHERE condicion que especifico la columna donde igualo su nombre al valor pedido.
-                2) GROUP BY agrupo por título) 
-
-OPCION 1:  */ 
+		(WHERE condicion que especifico la columna donde igualo su nombre al valor pedido*/
+  
 SELECT title, rating
 	FROM film
     WHERE rating = 'PG-13';
 
-/* OPCION 2:  */ 
-SELECT title, rating
-	FROM film
-	WHERE rating = 'PG-13'
-	ORDER BY film_id;
 
 /* 3. Encuentra el título y la descripción de todas las películas que contengan la palabra "amazing" en su descripción  
 		(WHERE + LIKE  condición que especifico la columna y dato exacto a extraer) */
@@ -88,24 +80,23 @@ recuento de alquileres.
 		(# Desde la tabla category a rental, pasando por film_category, film e inventory
 		 # INNER JOIN une las coincidencias de cada tabla
 		 # COUNT en la tabla rental, para el recuento de peliculas alquiladas por ID. 
-		 # Utilizo en cada tabla las columnas necesarias para datos y las comunes para unir las tablas :
-							1.rental -- rental_id, inventory_id, 2. inventory -- inventory id_, film_id ,
+		 # Utilizo en cada tabla las columnas necesarias para datos y las comunes para unir las tablas:
+							1.rental -- inventory_id, 2. inventory -- inventory id_, film_id ,
 							3. film_category --- film_id, category_id, 4.film -- film_id, 5. category -- category_id)*/ 
            
 SELECT category.category_id, category.name, COUNT(rental.rental_id) AS total_film_rental
 	FROM category
 	INNER JOIN film_category
-		 category.category_id = film_category.category_id
+		 ON category.category_id = film_category.category_id
     INNER JOIN inventory
 		ON film_category.film_id = inventory.film_id
 	INNER JOIN rental 
-    	 inventory.inventory_id = rental.inventory_id
+    	 ON inventory.inventory_id = rental.inventory_id
 	GROUP BY category_id;
     
 /* 12. Encuentra el promedio de duración de las películas para cada clasificación de la tabla film y muestra la
 clasificación junto con el promedio de duración. 
-		(# AVG para la media de la duración de las peliculas.
-		# GROUP BY para agrupar por clasificacion)  */
+		(# AVG para la media de la duración de las peliculas. GROUP BY para agrupar por clasificacion)  */
 
 SELECT rating, AVG(length) AS average_film_length
 	FROM film
@@ -179,7 +170,6 @@ SELECT title, release_year
     WHERE release_year BETWEEN 2005 AND 2010; 
     
 /* 17. Encuentra el título de todas las películas que son de la misma categoría que "Family".*/
-
 /* 1º opcion:
 		(# Utilizo 2 INNER JOIN para unir: a) film_category y film por film_id , b) film_category y category por categori_id. 
 		 # Añado WHERE para indicar la condición.) */ 
@@ -353,9 +343,9 @@ SELECT actor.first_name, actor.last_name
 	 # Selecciono los datos pedidos, los titulos en la tabla film que estan con la condicion de la cte. añadiendo la condición de length*/
  
 # Queries para añadir en la CTE:
-SELECT film_id
-FROM film_category
-WHERE category_id + subconsulta  extraccion de comedias;
+/* SELECT film_id
+	FROM film_category
+	WHERE category_id + subconsulta  extraccion de comedias;*/
 
 SELECT category_id
 FROM category
